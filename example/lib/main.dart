@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 
 void main() => runApp(MyApp());
@@ -167,6 +168,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
             ),
+
+            Container(
+              height: 100,
+              margin: EdgeInsets.only(top: 40.0),
+              child: CupertinoDatePicker(
+                  initialDateTime: DateTime.now(),
+                  mode: CupertinoDatePickerMode.date,
+                  onDateTimeChanged: (datetime) {}),
+            )
           ],
         ),
       ),

@@ -266,6 +266,10 @@ class _DatePickerState extends State<_DatePickerComponent> {
         setState(() {
           _dateCountOfMonth = dateCount;
         });
+        // 月份的日期数变更，判断当前选中的日期是否可选，不可选自动切换到最近的可选日期
+        if (_currentDate > dateCount) {
+          dateScrollCtrl.animateToItem(dateCount - 1, duration: Duration(milliseconds: 200), curve: Curves.ease);
+        }
       }
       if (_currentDate > dateCount) {
         _currentDate = dateCount;
@@ -276,6 +280,13 @@ class _DatePickerState extends State<_DatePickerComponent> {
 
   void _setDate(int index) {
     int date = index + 1;
+    print("----setDate: " + date.toString() + ", " + _dateCountOfMonth.toString());
+    if (date > _dateCountOfMonth) {
+      // over dayOfMonth's max range
+      dateScrollCtrl.animateToItem(_dateCountOfMonth - 1, duration: Duration(milliseconds: 200), curve: Curves.ease);
+      return;
+    }
+
     if (_currentDate != date) {
       _currentDate = date;
       _notifyDateChanged();
@@ -382,6 +393,11 @@ class _DatePickerState extends State<_DatePickerComponent> {
     );
   }
 
+  bool _keepInValidRange(ScrollEndNotification notification) {
+    print("----- _keepInValidRange");
+    return true;
+  }
+
   Widget _renderDaysPickerComponent(String dayAppend) {
     return new Expanded(
       flex: 1,
@@ -389,24 +405,33 @@ class _DatePickerState extends State<_DatePickerComponent> {
           padding: EdgeInsets.all(8.0),
           height: _kDatePickerHeight,
           decoration: BoxDecoration(color: Colors.white),
-          child: CupertinoPicker(
-            backgroundColor: Colors.white,
-            scrollController: dateScrollCtrl,
-            itemExtent: _kDatePickerItemHeight,
-            onSelectedItemChanged: (int index) {
-              _setDate(index);
-            },
-            children: List.generate(_dateCountOfMonth, (int index) {
-              return Container(
-                height: _kDatePickerItemHeight,
-                alignment: Alignment.center,
-                child: Text(
-                  "${index + 1}$dayAppend",
-                  style: TextStyle(color: Color(0xFF000046), fontSize: _kDatePickerFontSize),
-                  textAlign: TextAlign.start,
-                ),
-              );
-            }),
+          child: NotificationListener<ScrollEndNotification>(
+            onNotification: _keepInValidRange,
+            child: CupertinoPicker(
+              backgroundColor: Colors.white,
+              scrollController: dateScrollCtrl,
+              itemExtent: _kDatePickerItemHeight,
+              onSelectedItemChanged: (int index) {
+                _setDate(index);
+              },
+              children: List.generate(31, (int index) {
+                TextStyle textStyle;
+                if (index > _dateCountOfMonth - 1) {
+                  textStyle = TextStyle(color: Color(0xFFbbbbbb), fontSize: _kDatePickerFontSize);
+                } else {
+                  textStyle = TextStyle(color: Color(0xFF000046), fontSize: _kDatePickerFontSize);
+                }
+                return Container(
+                  height: _kDatePickerItemHeight,
+                  alignment: Alignment.center,
+                  child: Text(
+                    "${index + 1}$dayAppend",
+                    style: textStyle,
+                    textAlign: TextAlign.start,
+                  ),
+                );
+              }),
+            ),
           )),
     );
   }
