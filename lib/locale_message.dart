@@ -9,6 +9,9 @@ class LocaleMessage {
 
       case 'pt-br':
         return 'Feito';
+        
+      case 'ru':
+        return 'Готово';
 
       default:
         // default is English
@@ -26,6 +29,9 @@ class LocaleMessage {
 
       case 'pt-br':
         return 'Cancelar';
+        
+      case 'ru':
+        return 'Отмена';
 
       default:
         // default is English
@@ -123,6 +129,22 @@ class LocaleMessage {
           "Outubro",
           "Novembro",
           "Dezembro"
+        ];
+              
+      case 'ru':
+        return [
+          "Январь",
+          "Февраль",
+          "Март",
+          "Апрель",
+          "Май",
+          "Июнь",
+          "Июль",
+          "Август",
+          "Сентябрь",
+          "Октябрь",
+          "Ноябрь",
+          "Декабрь"
         ];
 
       default:
